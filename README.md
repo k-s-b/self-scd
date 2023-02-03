@@ -18,4 +18,4 @@ To run model change data paths for the following variables `largeScaleDataset`, 
 
 ## Data
 
-High resolution CESM data can be downloaded from Ultra-high-resolution climate simulation project webiste [at this link](http://climatedata.ibs.re.kr/data/cesm-hires)
+High resolution CESM data can be downloaded from Ultra-high-resolution climate simulation project website [at this link](http://climatedata.ibs.re.kr/data/cesm-hires)
