@@ -14,7 +14,7 @@ Climate change is one of the most critical challenges that our planet is facing 
 
 
 ## Usage
-To run model change data paths for the following variables `largeScaleDataset`, `largeScaleDataset_test`, `metaTransferDataset`, `dataset` in `main.py`
+To run model change data paths for the following variables `largeScaleDataset`, `largeScaleDataset_test`, `metaTransferDataset`, `dataset` in `main.py` and execute it as `python main.py`
 
 ## Data
 
