@@ -1,6 +1,6 @@
 # Statistical Climate Downscaling sans Ground Truth Data
 
-## Code base for "Statistical Climate Downscaling sans Ground Truth Data"
+#### This is the Pytorch implementation "Statistical Climate Downscaling sans Ground Truth Data".
 
 # Abstract
 
@@ -8,3 +8,14 @@ Climate change is one of the most critical challenges that our planet is facing 
 
 ## Model Architecture
 ![Screenshot 2023-02-03 204729](https://user-images.githubusercontent.com/62580782/216596023-2af5174b-571d-4bd2-9d1e-614e9180f676.jpg)
+
+## Training flow
+![training flow](https://user-images.githubusercontent.com/62580782/216606551-ab89b043-99f0-4a81-926b-63db8dca26ad.jpg)
+
+
+## Usage
+To run model change data paths for the following variables `largeScaleDataset`, `largeScaleDataset_test`, `metaTransferDataset`, `dataset` in `main.py`
+
+## Data
+
+High resolution CESM data can be downloaded from Ultra-high-resolution climate simulation project webiste [at this link](http://climatedata.ibs.re.kr/data/cesm-hires)
