@@ -17,8 +17,6 @@ import seaborn as sns
 from network.mynn import initialize_weights, Norm2d, Norm1d
 import torch.nn.functional as F
 
-from imresize import imresize
-from dataset import CutBlurClimateDataset
 from cutmix.utils import onehot, rand_bbox
 import cv2
 from tqdm.notebook import tqdm
@@ -719,33 +717,18 @@ def train_metatransfer(model, criterion, metaTransferDataset, epochs = 1500, sca
     return model, loss_test, best_epoch
 
 
-
-
 metaTransferDataset = MetaTransferDataGenerator(hr_dir = '', transform = True, scale_factor = scale_factor) #change data path
 
-
-
-
 start_time = time.time()
-
 model, loss_test, meta_transfer_best_epoch = train_metatransfer(model, nn.MSELoss(), metaTransferDataset, epochs = 1000)
 
 print("Time Elapsed for Meta-transfer Learning: {} min".format((time.time()-start_time)//60))
-
-
-
-
 print(meta_transfer_best_epoch)
 
 
 
 model.load_state_dict(torch.load(f"./MZSR_models/metatrain/{postfix}/MZSR_metatrain_epoch_{meta_transfer_best_epoch}_{postfix}.pt"))
-
-
-
-
 del metaTransferDataset
-
 
 
 def meta_test(model, criterion, data, epochs = 10, scale_factor = 2.,
@@ -777,24 +760,24 @@ def meta_test(model, criterion, data, epochs = 10, scale_factor = 2.,
 
     model.eval()
     output_hr, _ = model(lr_father.to(device))
-#     bilinear = F.interpolate(lr_father_small, (lr_father.shape[2], lr_father.shape[3]), mode= 'bilinear')
+     bilinear = F.interpolate(lr_father_small, (lr_father.shape[2], lr_father.shape[3]), mode= 'bilinear')
 
     fin_mses = {}
     fin_mses['lr'] = {}
     fin_mses['hr'] = {}
     fin_mses['out'] = {}
     fin_mses['gt'] = {}
-#     fin_mses['bilinear'] = {}
+     fin_mses['bilinear'] = {}
 
     for j, chn in enumerate(vars_out):
         out_inv = (torch.clamp(inv(chn,output_hr[:,j,:,:], means, stds), min = 0)) # compute inverse of out and hr
         hrs_inv = (torch.clamp(inv(chn,lr_father[:,j,:,:], means, stds), min = 0))
         lrs_inv = (torch.clamp(inv(chn,lr_son[:,j,:,:], means, stds), min = 0))
-#         bilinear_inv = (torch.clamp(inv(chn,bilinear[:,j,:,:], means, stds), min = 0))
+         bilinear_inv = (torch.clamp(inv(chn,bilinear[:,j,:,:], means, stds), min = 0))
 
         fin_mses['out'][chn] = out_inv
         fin_mses['hr'][chn] = hrs_inv
-#         fin_mses['bilinear'][chn] = bilinear_inv
+         fin_mses['bilinear'][chn] = bilinear_inv
 
     gt_hr[:2, :, :] = torch.clamp(gt_hr[:2, :, :], min = 0)
 
@@ -805,7 +788,7 @@ def meta_test(model, criterion, data, epochs = 10, scale_factor = 2.,
             (
                 nn.MSELoss()(fin_mses['out'][chn].reshape(gt_hr[chn,:,:].shape), gt_hr[chn,:,:].to(device)).item(), \
                 nn.MSELoss()(fin_mses['hr'][chn].to(device).reshape(gt_hr[chn,:,:].shape), gt_hr[chn,:,:].to(device)).item(),\
-#                 nn.MSELoss()(fin_mses['bilinear'][chn].to(device).reshape(gt_hr[chn,:,:].shape), gt_hr[chn,:,:].to(device)).item()
+                nn.MSELoss()(fin_mses['bilinear'][chn].to(device).reshape(gt_hr[chn,:,:].shape), gt_hr[chn,:,:].to(device)).item()
             )
         )
     for chn in vars_out:
@@ -825,19 +808,7 @@ def meta_test(model, criterion, data, epochs = 10, scale_factor = 2.,
 
 
 
-
 dataset = HRClimateDataset(hr_dir = <>)#change data path
-
-
-
-
-idx = list(range(len(dataset)))
-random.seed(1)
-random.shuffle(idx)
-
-num_samples = 100
-print(idx[:5])
-meta_transfer_best_epoch = 997
 
 
 start_time = time.time()
