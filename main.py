@@ -566,7 +566,7 @@ def train_largescale(model, criterion, optimizer, dataset, test_dataset=None, ep
     if pretrained_checkpoint > 0:
         model.load_state_dict(torch.load(f"./MZSR_models/largescale/{postfix}/MZSR_largescale_epoch_{pretrained_checkpoint}_{postfix}.pt"))
     if data_parallel:
-        model = torch.nn.DataParallel(model, device_ids=[3,4,5])
+        model = torch.nn.DataParallel(model, device_ids=device_ids)
     best_mse_test = 1000.0
     best_epoch = 0
     os.makedirs(f"./MZSR_models/largescale/{postfix}", exist_ok=True)
@@ -754,24 +754,24 @@ def meta_test(model, criterion, data, epochs = 10, scale_factor = 2.,
 
     model.eval()
     output_hr, _ = model(lr_father.to(device))
-     bilinear = F.interpolate(lr_father_small, (lr_father.shape[2], lr_father.shape[3]), mode= 'bilinear')
+    bilinear = F.interpolate(lr_father_small, (lr_father.shape[2], lr_father.shape[3]), mode= 'bilinear')
 
     fin_mses = {}
     fin_mses['lr'] = {}
     fin_mses['hr'] = {}
     fin_mses['out'] = {}
     fin_mses['gt'] = {}
-     fin_mses['bilinear'] = {}
+    fin_mses['bilinear'] = {}
 
     for j, chn in enumerate(vars_out):
         out_inv = (torch.clamp(inv(chn,output_hr[:,j,:,:], means, stds), min = 0)) # compute inverse of out and hr
         hrs_inv = (torch.clamp(inv(chn,lr_father[:,j,:,:], means, stds), min = 0))
         lrs_inv = (torch.clamp(inv(chn,lr_son[:,j,:,:], means, stds), min = 0))
-         bilinear_inv = (torch.clamp(inv(chn,bilinear[:,j,:,:], means, stds), min = 0))
+        bilinear_inv = (torch.clamp(inv(chn,bilinear[:,j,:,:], means, stds), min = 0))
 
         fin_mses['out'][chn] = out_inv
         fin_mses['hr'][chn] = hrs_inv
-         fin_mses['bilinear'][chn] = bilinear_inv
+        fin_mses['bilinear'][chn] = bilinear_inv
 
     gt_hr[:2, :, :] = torch.clamp(gt_hr[:2, :, :], min = 0)
 
